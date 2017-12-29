@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "ethereum-notary-contracts": "1.0.1",
+    "ethereum-notary-contracts": "1.0.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.0.17",
+    "react-table": "^6.7.6",
     "truffle-contract": "^3.0.1"
   },
   "scripts": {

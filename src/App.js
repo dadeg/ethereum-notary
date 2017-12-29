@@ -6,34 +6,69 @@ import './App.css';
 import NotaryStoreContract from 'ethereum-notary-contracts';
 import contract from 'truffle-contract';
 
-class App extends Component {
-  render() {
-    if (!web3) { alert('Network error. Use something like MetaMask to connect to the Ethereum network.'); }
-    const storeContract = contract(NotaryStoreContract);
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
 
-    storeContract.setProvider(web3.currentProvider);
-    storeContract.defaults({ from: web3.eth.defaultAccount });
+let storeInstance;
 
-    let storeInstance;
-
-    storeContract.deployed().then(instance => {
-      console.log('deployed', instance);
+function getInstance() {
+  if (!web3) { alert('Network error. Use something like MetaMask to connect to the Ethereum network.'); }
+  if (storeInstance) {
+    return Promise.resolve(storeInstance);
+  } else {
+    return createStoreInstance().then(instance => {
       storeInstance = instance;
+      return instance;
+    });
+  }
+}
 
-      const foundEvent = storeInstance.FoundEntry(({}, { fromBlock: 0, toBlock: 'latest' }));
+function createStoreInstance() {
+  const storeContract = contract(NotaryStoreContract);
+  storeContract.setProvider(web3.currentProvider);
+  storeContract.defaults({ from: web3.eth.defaultAccount });
 
-      foundEvent.watch((err, response) => {
-        console.log('event foundEntry', err, response);
+  return storeContract.deployed();
+}
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { foundEntries: [] };
+    this.findEntries = this.findEntries.bind(this);
+  }
+
+  createEntry() {
+    return getInstance().then(instance => {
+      return Promise.resolve(instance.create('12345666'));
+    });
+  }
+
+  findEntries() {
+    this.setState(prevState => {
+      return Object.assign({}, prevState, { foundEntries: [] });
+    });
+
+    getInstance().then(instance => {
+      const entryEvent = instance.Entry({}, { fromBlock: 0, toBlock: 'latest' });
+      entryEvent.watch((err, response) => {
+        this.setState(prevState => {
+          prevState.foundEntries.push(response.args);
+          return prevState;
+        });
       });
+    });
+  }
 
-      return storeInstance.create('asdf');
-      // return 0;
-    }).then(result => {
-      console.log('result of create', result);
-      return storeInstance.findAll('asdf');
-    }).then(result => {
-      console.log('result of read', result);
-    }).catch(console.log);
+  render() {
+
+    const columns = [{
+      Header: 'Signer\'s Address',
+      accessor: 'signer' // String-based value accessors!
+    }, {
+      Header: 'Document Hash (SHA512)',
+      accessor: 'documentHash'
+    }]
 
     return (
       <div className="App">
@@ -44,6 +79,12 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <button onClick={this.createEntry}>Create Entry</button>
+        <button onClick={this.findEntries}>Find Entries</button>
+        <ReactTable
+          data={this.state.foundEntries}
+          columns={columns}
+        />
       </div>
     );
   }
