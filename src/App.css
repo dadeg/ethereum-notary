@@ -1,5 +1,10 @@
 .App {
-  text-align: center;
+
+}
+
+.App p {
+  padding-left:10px;
+  padding-right:10px;
 }
 
 .App-logo {
@@ -9,9 +14,10 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 70px;
   padding: 20px;
   color: white;
+  text-align: center;
 }
 
 .App-title {
@@ -25,4 +31,18 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.uploader {
+  outline: 2px dashed gray;
+  height:60px;
+  padding:40px;
+  margin: 10px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
 }
