@@ -80,8 +80,7 @@ class App extends Component {
   createEntry() {
     if (!this.state.documentHashToUpload) { return; }
     return getInstance().then(instance => {
-      console.log(this.state.documentHashToUpload);
-      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload)); // adding 0x because it is needed for Solidity to recognize the hash as byte32
+      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload, {from: web3.eth.defaultAccount, value: web3.toWei("1", "finney") })); // adding 0x because it is needed for Solidity to recognize the hash as byte32
     });
   }
 
