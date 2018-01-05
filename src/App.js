@@ -1,64 +1,13 @@
-/* global web3 */
 import React, { Component } from 'react';
 import './App.css';
-
-import NotaryStoreContract from 'ethereum-notary-contracts';
-import contract from 'truffle-contract';
 
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
 import Dropzone from 'react-dropzone';
 
-let storeInstance;
-
-function getInstance() {
-  if (!web3) { alert('Network error. Use something like MetaMask to connect to the Ethereum network.'); }
-  if (storeInstance) {
-    return Promise.resolve(storeInstance);
-  } else {
-    return createStoreInstance().then(instance => {
-      storeInstance = instance;
-      return instance;
-    });
-  }
-}
-
-function createStoreInstance() {
-  const storeContract = contract(NotaryStoreContract);
-  storeContract.setProvider(web3.currentProvider);
-  storeContract.defaults({ from: web3.eth.defaultAccount });
-
-  return storeContract.deployed();
-}
-
-/**
- * @param {ArrayBuffer} buffer
- */
-function sha256(buffer) {
-  return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
-    return hex(hash);
-  });
-}
-
-function hex(buffer) {
-  var hexCodes = [];
-  var view = new DataView(buffer);
-  for (var i = 0; i < view.byteLength; i += 4) {
-    // Using getUint32 reduces the number of iterations needed (we process 4 bytes each time)
-    var value = view.getUint32(i)
-    // toString(16) will give the hex representation of the number without padding
-    var stringValue = value.toString(16)
-    // We use concatenation and slice for padding
-    var padding = '00000000'
-    var paddedValue = (padding + stringValue).slice(-padding.length)
-    hexCodes.push(paddedValue);
-  }
-
-  // Join all the hex strings into one
-  return hexCodes.join("");
-}
-
+import sha256 from './lib/sha256';
+import getInstance from './lib/contract-instance';
 
 class App extends Component {
   constructor(props) {
@@ -80,7 +29,7 @@ class App extends Component {
   createEntry() {
     if (!this.state.documentHashToUpload) { return; }
     return getInstance().then(instance => {
-      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload, {from: web3.eth.defaultAccount, value: web3.toWei("1", "finney") })); // adding 0x because it is needed for Solidity to recognize the hash as byte32
+      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload, { from: web3.eth.defaultAccount, value: web3.toWei("1", "finney") })); // adding 0x because it is needed for Solidity to recognize the hash as byte32
     });
   }
 
