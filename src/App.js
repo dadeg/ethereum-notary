@@ -7,7 +7,7 @@ import 'react-table/react-table.css';
 import Dropzone from 'react-dropzone';
 
 import sha256 from './lib/sha256';
-import getInstance from './lib/contract-instance';
+import { getInstance, nonGlobalWeb3 as web3 } from './lib/contract-instance';
 
 class App extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class App extends Component {
   createEntry() {
     if (!this.state.documentHashToUpload) { return; }
     return getInstance().then(instance => {
-      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload, { from: web3.eth.defaultAccount, value: web3.toWei("1", "finney") })); // adding 0x because it is needed for Solidity to recognize the hash as byte32
+      return Promise.resolve(instance.create("0x" + this.state.documentHashToUpload, { value: web3.utils.toWei("1", "finney") })); // adding 0x because it is needed for Solidity to recognize the hash as byte32
     });
   }
 

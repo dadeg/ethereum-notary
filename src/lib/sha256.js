@@ -1,7 +1,7 @@
 /**
  * @param {ArrayBuffer} buffer
  */
-export function sha256(buffer) {
+export default function sha256(buffer) {
   return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
     return hex(hash);
   });
