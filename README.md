@@ -1,6 +1,6 @@
 [View the demo running on the Ropsten network](https://dadeg.github.io/ethereum-notary/)
 
-This is a proof-of-concept "Dapp" running on the test network.
+This is a proof-of-concept "Dapp" running on the test network. The [contract code](https://github.com/dadeg/ethereum-notary-contracts) is also open-source and tested.
 
 This service provides a way to publicly verify signatures on a digital document without the need for a trusted outside party.
 
