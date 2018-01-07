@@ -117,7 +117,7 @@ class App extends Component {
         </p>
         <p>
           The original document always generates the same hash. If there is ever a dispute over the details of the document,
-          Anybody who possesses the original digital document can generate the hash and show that people have signed it by searching
+          anybody who possesses the original digital document can generate the hash and show that people have signed it by searching
           the blockchain for that hash and the accompanying Addresses.
         </p>
         <p>
